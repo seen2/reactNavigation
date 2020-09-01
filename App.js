@@ -72,7 +72,8 @@ function SettingsScreen() {
           alignItems: "center",
         }}
       >
-        <Text>Settings</Text>
+        <Text>Settings!</Text>
+        <Button title="Go to SettingsDetails" />
       </View>
     </SafeAreaView>
   );
