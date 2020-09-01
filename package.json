@@ -19,5 +19,18 @@
     "@babel/core": "^7.8.6",
     "babel-preset-expo": "~8.1.0"
   },
-  "private": true
+  "private": true,
+  "name": "reactnavigation",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seen2/reactNavigation.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/seen2/reactNavigation/issues"
+  },
+  "homepage": "https://github.com/seen2/reactNavigation#readme",
+  "description": ""
 }
