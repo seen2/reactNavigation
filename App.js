@@ -1,11 +1,18 @@
 import * as React from "react";
-import { Text, View, Image, SafeAreaView, Button } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  SafeAreaView,
+  Button,
+} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-function CustomHeader({ isMenu }) {
+function CustomHeader({ isMenu, navigation }) {
   return (
     <View
       style={{
@@ -14,12 +21,16 @@ function CustomHeader({ isMenu }) {
         width: "100%",
         flexDirection: "row",
         paddingTop: 5,
+        marginBottom: 20,
       }}
     >
       {isMenu ? (
-        <View style={{ flex: 1, marginLeft: 15 }}>
+        <TouchableOpacity
+          onPress={() => navigation.openDrawer()}
+          style={{ flex: 1, marginLeft: 15 }}
+        >
           <Ionicons name="ios-menu" size={50} color="red" />
-        </View>
+        </TouchableOpacity>
       ) : null}
       <View style={{ flex: 1.5 }}></View>
       <View style={{ flex: 1 }}></View>
@@ -30,7 +41,7 @@ function CustomHeader({ isMenu }) {
 function HomeScreen(props) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <CustomHeader isMenu={true} />
+      <CustomHeader isMenu={true} navigation={props.navigation} />
       <View
         style={{
           flex: 1,
@@ -69,7 +80,7 @@ function HomeScreenDetails() {
 function SettingsScreen(props) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <CustomHeader isMenu={true} />
+      <CustomHeader isMenu={true} navigation={props.navigation} />
       <View
         style={{
           flex: 1,
@@ -131,32 +142,56 @@ function SettingsStack() {
   );
 }
 
+function NotificationsScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, paddingTop: 30, margin: 10 }}>
+      <CustomHeader isMenu={true} navigation={navigation} />
+      <Button
+        onPress={() => navigation.goBack()}
+        title="Go back home"
+        color="tomato"
+      />
+    </View>
+  );
+}
+
+const Drawer = createDrawerNavigator();
+
+function TabNavigator() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === "Home") {
+            iconName = focused ? "ios-home" : "md-home";
+          } else if (route.name === "Settings") {
+            iconName = focused ? "ios-list-box" : "ios-list";
+          }
+
+          // You can return any component that you like here!
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
+      tabBarOptions={{
+        activeTintColor: "red",
+        inactiveTintColor: "gray",
+      }}
+    >
+      <Tab.Screen name="Home" component={HomeStack} />
+      <Tab.Screen name="Settings" component={SettingsStack} />
+    </Tab.Navigator>
+  );
+}
+
 export default function App() {
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
-
-            if (route.name === "Home") {
-              iconName = focused ? "ios-home" : "md-home";
-            } else if (route.name === "Settings") {
-              iconName = focused ? "ios-list-box" : "ios-list";
-            }
-
-            // You can return any component that you like here!
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-        })}
-        tabBarOptions={{
-          activeTintColor: "red",
-          inactiveTintColor: "gray",
-        }}
-      >
-        <Tab.Screen name="Home" component={HomeStack} />
-        <Tab.Screen name="Settings" component={SettingsStack} />
-      </Tab.Navigator>
+      <Drawer.Navigator initialRouteName="MenuTab">
+        <Drawer.Screen name="MenuTab" component={TabNavigator} />
+        <Drawer.Screen name="Notifications" component={NotificationsScreen} />
+      </Drawer.Navigator>
     </NavigationContainer>
   );
 }
