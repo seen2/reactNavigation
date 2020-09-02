@@ -3,8 +3,9 @@ import { Text, View, Image, SafeAreaView, Button } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
-function CustomHeader() {
+function CustomHeader({ isMenu }) {
   return (
     <View
       style={{
@@ -15,13 +16,11 @@ function CustomHeader() {
         paddingTop: 5,
       }}
     >
-      <View style={{ flex: 1 }}>
-        <Image
-          source={require("./src/assets/menu.png")}
-          style={{ height: 40, width: 40, marginLeft: 15 }}
-          resizeMode="contain"
-        />
-      </View>
+      {isMenu ? (
+        <View style={{ flex: 1, marginLeft: 15 }}>
+          <Ionicons name="ios-menu" size={50} color="red" />
+        </View>
+      ) : null}
       <View style={{ flex: 1.5 }}></View>
       <View style={{ flex: 1 }}></View>
     </View>
@@ -31,7 +30,7 @@ function CustomHeader() {
 function HomeScreen(props) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <CustomHeader />
+      <CustomHeader isMenu={true} />
       <View
         style={{
           flex: 1,
@@ -42,6 +41,7 @@ function HomeScreen(props) {
         <Text>Home!</Text>
         <Button
           title="Go to HomeDetails"
+          color="tomato"
           onPress={() => props.navigation.navigate("HomeDetails")}
         />
       </View>
@@ -69,7 +69,7 @@ function HomeScreenDetails() {
 function SettingsScreen(props) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <CustomHeader />
+      <CustomHeader isMenu={true} />
       <View
         style={{
           flex: 1,
@@ -80,6 +80,7 @@ function SettingsScreen(props) {
         <Text>Settings!</Text>
         <Button
           title="Go to SettingsDetails"
+          color="tomato"
           onPress={() => props.navigation.navigate("SettingsDetails")}
         />
       </View>
@@ -133,7 +134,26 @@ function SettingsStack() {
 export default function App() {
   return (
     <NavigationContainer>
-      <Tab.Navigator>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === "Home") {
+              iconName = focused ? "ios-home" : "md-home";
+            } else if (route.name === "Settings") {
+              iconName = focused ? "ios-list-box" : "ios-list";
+            }
+
+            // You can return any component that you like here!
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+        })}
+        tabBarOptions={{
+          activeTintColor: "red",
+          inactiveTintColor: "gray",
+        }}
+      >
         <Tab.Screen name="Home" component={HomeStack} />
         <Tab.Screen name="Settings" component={SettingsStack} />
       </Tab.Navigator>
