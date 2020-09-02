@@ -10,8 +10,13 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import {
+  DrawerContentScrollView,
+  DrawerItemList,
+} from "@react-navigation/drawer";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
+//->
 function CustomHeader({ isMenu, navigation }) {
   return (
     <View
@@ -37,7 +42,7 @@ function CustomHeader({ isMenu, navigation }) {
     </View>
   );
 }
-
+//1->2->1->
 function HomeScreen(props) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -59,7 +64,7 @@ function HomeScreen(props) {
     </SafeAreaView>
   );
 }
-
+//1->2->1->1
 function HomeScreenDetails() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -77,6 +82,7 @@ function HomeScreenDetails() {
   );
 }
 
+//1->2->2->
 function SettingsScreen(props) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -99,6 +105,7 @@ function SettingsScreen(props) {
   );
 }
 
+//1->2->2->1
 function SettingsScreenDetails() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -119,6 +126,7 @@ function SettingsScreenDetails() {
 const Tab = createBottomTabNavigator();
 const StackHome = createStackNavigator();
 
+//1->2->1
 function HomeStack() {
   return (
     <StackHome.Navigator initialRouteName="Home">
@@ -130,6 +138,7 @@ function HomeStack() {
 
 const StackSettings = createStackNavigator();
 
+//1->2->2
 function SettingsStack() {
   return (
     <StackSettings.Navigator initialRouteName="Settings">
@@ -141,21 +150,32 @@ function SettingsStack() {
     </StackSettings.Navigator>
   );
 }
-
+//1->3
 function NotificationsScreen({ navigation }) {
   return (
     <View style={{ flex: 1, paddingTop: 30, margin: 10 }}>
       <CustomHeader isMenu={true} navigation={navigation} />
-      <Button
-        onPress={() => navigation.goBack()}
-        title="Go back home"
-        color="tomato"
-      />
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Text>Notifications Screen</Text>
+        <Button
+          onPress={() => navigation.goBack()}
+          title="Go back home"
+          color="tomato"
+        />
+      </View>
     </View>
   );
 }
 
 const Drawer = createDrawerNavigator();
+
+//1->2
 
 function TabNavigator() {
   return (
@@ -185,10 +205,46 @@ function TabNavigator() {
   );
 }
 
+//1->1
+function CustomDrawerContent(props) {
+  return (
+    <SafeAreaView style={{ flex: 1, padding: 10, backgroundColor: "pink" }}>
+      <DrawerContentScrollView {...props}>
+        <View
+          style={{
+            paddingTop: 10,
+            alignItems: "center",
+          }}
+        >
+          <Ionicons name="ios-person-add" size={50} color="black" />
+        </View>
+        <DrawerItemList {...props} />
+      </DrawerContentScrollView>
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "flex-end",
+        }}
+      >
+        <Ionicons name="ios-log-out" size={50} color="black" />
+      </View>
+    </SafeAreaView>
+  );
+}
+
+//1
+
 export default function App() {
   return (
     <NavigationContainer>
-      <Drawer.Navigator initialRouteName="MenuTab">
+      <Drawer.Navigator
+        initialRouteName="MenuTab"
+        drawerContentOptions={{
+          activeTintColor: "#e91e63",
+          itemStyle: { marginVertical: 5 },
+        }}
+        drawerContent={(props) => CustomDrawerContent(props)}
+      >
         <Drawer.Screen name="MenuTab" component={TabNavigator} />
         <Drawer.Screen name="Notifications" component={NotificationsScreen} />
       </Drawer.Navigator>
